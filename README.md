@@ -1,6 +1,6 @@
 # IT Infrastructure & Systems Administration Lab Portfolio
 
-**Brendan Trimble** | Cybersecurity, B.S. — Purdue University  
+**Brendan Trimble** | Cybersecurity, B.S. | Purdue University  
 CNIT 242 · CNIT 340 · CNIT 344 | Spring–Fall 2026
 
 ---
