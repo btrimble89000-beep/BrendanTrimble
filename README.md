@@ -1,4 +1,4 @@
-# IT Infrastructure & Systems Administration Lab Portfolio
+# IT Infrastructure & Cybersecurity Lab Portfolio
 
 **Brendan Trimble** | Cybersecurity, B.S. | Purdue University  
 CNIT 242 · CNIT 340 · CNIT 344 | Spring–Fall 2026
@@ -7,7 +7,7 @@ CNIT 242 · CNIT 340 · CNIT 344 | Spring–Fall 2026
 
 ## Overview
 
-This repository documents a series of hands-on enterprise IT infrastructure labs completed at Purdue's Polytechnic University in the Computer Information Technology (CIT) department. Across seven labs, I designed, deployed, and administered multi-server Windows environments, Nutanix hyperconverged infrastructure, Linux systems, and physical network architectures, mirroring the toolsets and workflows used in professional IT and cybersecurity operations.
+This repository documents hands-on enterprise IT infrastructure and cybersecurity labs completed at Purdue's Polytechnic University in the Computer Information Technology (CIT) department. Across ten labs and an individual project, I designed, deployed, and administered multi-server Windows environments, Nutanix hyperconverged infrastructure, Linux systems, physical network architectures, and security monitoring tools — mirroring the toolsets and workflows used in professional IT and cybersecurity operations.
 
 ---
 
@@ -22,6 +22,17 @@ This repository documents a series of hands-on enterprise IT infrastructure labs
 | 5 | Enterprise Windows Server Administration — Part II | CNIT 242 | May 2026 |
 | 6 | Physical Layer and Ethernet Overview | CNIT 344 | Sep 2026 |
 | 7 | UNIX/Linux System Administration | CNIT 340 | Sep 2026 |
+| 8 | Linux/UNIX Network Administration | CNIT 340 | Oct 2026 |
+| 9 | Wireless Router & Enterprise Router | CNIT 344 | Oct 2026 |
+| 10 | Spanning Tree Protocol and Physical Security | CNIT 344 | Nov 2026 |
+
+---
+
+## Individual Projects
+
+| Project | Description |
+|---------|-------------|
+| [Splunk: Direct Install vs. Home Lab VM](#project-splunk-setup-direct-install-vs-home-lab-vm) | Compared Splunk deployment methods and analyzed security event data |
 
 ---
 
@@ -90,19 +101,66 @@ Provisioned and administered Rocky Linux and Ubuntu virtual machines from scratc
 
 ---
 
+### Lab 8: Linux/UNIX Network Administration (CNIT 340)
+**Platform:** Rocky Linux 9.8 | Ubuntu 24.04 | Windows Server | OpenSSH | NFS | Samba | SELinux | X-Windows
+
+Configured and administered cross-platform network file and remote access services across a three-OS environment (Rocky Linux, Ubuntu, and Windows Server). Deployed OpenSSH on Rocky Linux and Ubuntu, enabling remote shell access from both Linux hosts and Windows PowerShell via `ssh` and `scp` for secure file transfer. Configured NFS servers on both Linux distributions: exported `/var/nfs` directories with `no_root_squash` permissions, enforced SELinux boolean (`nfs_export_all_rw`) for read/write access, opened NFS ports in `firewalld` (`nfs`, `rpc-bind`, `mountd`), and mounted exports cross-platform (Rocky to Ubuntu, Ubuntu to Rocky, and both to Windows via `mount -o anon`). Installed and configured NFS server and client features on Windows Server via PowerShell (`Install-WindowsFeature FS-NFS-Service`). Installed Samba on both Linux distributions, created password-authenticated SMB shares (`/var/smb`), set SELinux contexts with `semanage fcontext`, and mounted Samba shares from all three operating systems. Installed a Windows SMB share via `New-SmbShare` and mounted it from Linux clients using `mount -t cifs` with `vers=3.0`. Hardened each system by identifying and disabling non-required services (`avahi-daemon`, `cups`, `cockpit.socket`, `chronyd`) with `systemctl` and removing their firewall rules. Enabled process accounting (`psacct`/`acct`) to log command execution by user. Configured X-Windows (X11/XLib) on Rocky Linux and Ubuntu for graphical session forwarding. Applied system patches on both distributions.
+
+**Key skills:** OpenSSH, SCP, NFS (Linux/Windows), Samba/CIFS, SELinux enforcement, `firewalld`, cross-platform file sharing, service hardening, process accounting (`psacct`), X-Windows (X11), `systemctl`
+
+---
+
+### Lab 9: Wireless Router & Enterprise Router (CNIT 344)
+**Platform:** VyOS 1.5 | Cisco ISR 4331 | Cisco 3750A/3750B | HP/Aruba Switch | Wireshark | PuTTY
+
+Deployed and configured a complete enterprise network from physical hardware to routed, segmented VLANs with internet access. Installed VyOS on a mini PC via Rufus-formatted USB, configured a WAN interface (`eth5`, 44.34.12.254/24) with a static default route, and established wireless access point settings including SSID, WPA2 passphrase, and 802.11g channel. Configured DHCP server pools on VyOS for the wireless subnet (`172.16.12.0/24`, range .100–.200) and three VLANs (`121: 10.1.12.0/24`, `122: 10.2.12.0/24`, `123: 10.3.12.0/24`) with correct gateway and DNS options. Enabled NAT masquerading for all internal subnets through the WAN interface and configured SSH remote access on the WAN address. Created VLAN sub-interfaces (VIFs) on VyOS for inter-VLAN routing. Configured access and trunk ports on two Cisco 3750 switches and an HP/Aruba switch via Cisco IOS CLI, assigning each physical port to its respective VLAN and setting trunk links between devices. Enabled SSH on all three switches with RSA key generation and VTY line authentication. Replaced VyOS with a Cisco ISR 4331 as the enterprise router: performed factory reset, configured WAN and hostname, created 802.1Q sub-interfaces for each VLAN (`encapsulation dot1Q`), set DHCP pools, configured NAT overload with access lists, and enabled SSH. Captured and analyzed 802.1Q-tagged traffic in Wireshark on a Linux host, comparing outgoing frames across VLAN-tagged uplink paths to verify correct encapsulation.
+
+**Key skills:** VyOS, Cisco ISR 4331, Cisco IOS CLI, VLAN access/trunk port configuration, 802.1Q trunking, inter-VLAN routing, NAT/masquerading, DHCP, SSH (router/switch), HP/Aruba CLI, Wireshark 802.1Q analysis, PuTTY serial console
+
+---
+
+### Lab 10: Spanning Tree Protocol and Physical Security (CNIT 344)
+**Platform:** Cisco ISR 4331 | Cisco ISR 1921 | Cisco 3750E (×2) | HP/Aruba Switch | PuTTY | Wireshark
+
+Designed and implemented a redundant, loop-tolerant enterprise switching network with physical security hardening. The lab scenario involved rebuilding the switching layer for a growing business that had experienced broadcast storms and unauthorized device access due to unmanaged redundant links and open switch ports. Cabled three switches (two Cisco 3750E and one HP/Aruba) in a physical loop using CAT6 uplinks, then configured Multiple Spanning Tree Protocol (MSTP) in a single MST region (`G12`) to manage loop prevention. Assigned VLAN 121 to MST Instance 1 with Cisco g12switch2 as the Root Bridge (via `spanning-tree mst 1 priority 0`), and VLANs 122 and 123 to MST Instance 2 with the HP/Aruba switch (g12switch1) as Root Bridge. The third Cisco switch (g12switch3) remained a non-root bridge for load balancing. Configured both Cisco ISR routers (4331 and 1921) with static WAN addresses, 802.1Q sub-interfaces for all three VLANs, DHCP pools, and NAT overload. Applied physical security hardening to all devices: renamed every switch and router to the `gXXswitchY`/`gXXrouterY` naming convention, added descriptions to every active port and VLAN, changed default passwords, enabled PortFast and BPDU Guard on all end-device ports, and shut down all unused ports. Verified traffic paths using traceroute and MAC address table inspection to confirm correct Root Bridge election and designated/blocked port assignments per VLAN. Conducted a failover test by disabling the HP switch's uplink port, confirming traffic rerouted through the loop to maintain connectivity.
+
+**Key skills:** MSTP (Multiple Spanning Tree Protocol), Root Bridge election, PortFast, BPDU Guard, Cisco IOS (ISR 4331 & 1921), 802.1Q sub-interfaces, NAT overload, DHCP, physical security hardening, unused port shutdown, switch/router naming conventions, failover testing
+
+---
+
+## Individual Projects
+
+### Project: Splunk Setup — Direct Install vs. Home Lab VM
+
+**Tools:** Splunk Enterprise | Kali Linux | VirtualBox/VMware | Windows 10/11
+
+Explored two distinct methods of deploying Splunk Enterprise for security event monitoring and log analysis: a direct installation on a host OS versus a virtualized home lab deployment within a VM. The project evaluated trade-offs between both approaches across performance, isolation, portability, and ease of reconfiguration — simulating the decision-making process a security analyst faces when standing up a SIEM in resource-constrained environments.
+
+**Direct Install approach:** Installed Splunk Enterprise natively on the host operating system, configured the web interface on the default port (`8000`), and began ingesting local system logs and Windows Event Logs. Direct access to host hardware provided faster indexing and simpler initial setup, but changes to the host environment (updates, software conflicts) could disrupt the Splunk instance.
+
+**Home Lab VM approach:** Deployed Splunk inside a virtual machine (Kali Linux or a dedicated Ubuntu Server VM), isolating the SIEM from the host. Configured network adapters to allow log forwarding from other VMs in the lab environment (using Universal Forwarders or syslog). This approach offered snapshot-based rollback, clean separation from the production host, and the ability to simulate a multi-node network for forwarding logs from attack simulation machines to the Splunk indexer.
+
+**Analysis:** The VM-based deployment proved more practical for security research and CTF-style lab work: snapshots allow reverting after destructive testing, the network namespace supports realistic forwarder-to-indexer topologies, and the isolated environment prevents Splunk's resource usage from impacting the host. Direct install was faster for quick event ingestion on a single machine but lacked the flexibility needed for multi-system log correlation.
+
+**Key skills:** Splunk Enterprise, SIEM deployment, log ingestion, Universal Forwarder, Windows Event Log monitoring, VirtualBox/VMware VM configuration, network adapter bridging, snapshot management
+
+---
+
 ## Technical Skills Demonstrated
 
-**Operating Systems:** Windows Server 2022/2025, Windows 11, Rocky Linux 9.8, Ubuntu 24.04, TrueNAS Core  
-**Virtualization:** Nutanix AHV, Prism Element, Prism Central, VMware Workstation  
+**Operating Systems:** Windows Server 2022/2025, Windows 11, Rocky Linux 9.8, Ubuntu 24.04, Kali Linux, TrueNAS Core, VyOS  
+**Virtualization:** Nutanix AHV, Prism Element, Prism Central, VMware Workstation, VirtualBox  
 **Directory Services:** Active Directory Domain Services (AD DS), multi-domain forests, OU design, FSMO roles, Group Policy (GPO), OpenLDAP  
-**Networking:** Cisco IOS (3750 Series), VLAN, SPAN, static IP, DNS, DHCP, Wireshark, PuTTY, TIA-568 cabling  
+**Networking:** Cisco IOS (3750/ISR 4331/ISR 1921), VLAN, 802.1Q trunking, MSTP/STP, inter-VLAN routing, NAT, DHCP, SPAN/RSPAN, SSH, DNS, Wireshark, PuTTY, TIA-568 cabling, HP/Aruba CLI, VyOS  
+**Network Services:** NFS, Samba/CIFS, OpenSSH, SCP, X-Windows (X11), CUPS printing  
 **Storage:** TrueNAS Core (SMB/CIFS, ACL, storage pools), DFS Namespaces/Replication, Windows Server Backup, LVM  
-**Automation & Scripting:** PowerShell Remoting (WinRM), batch scripting, Task Scheduler  
-**Systems Management:** WSUS, Windows Admin Center (WAC), CUPS, disk quotas, PAM  
-**Security:** Group Policy hardening, ACL/RBAC design, password policy enforcement, network monitoring (SPAN/Wireshark)
+**Security Monitoring:** Splunk Enterprise, SIEM deployment, log ingestion, Universal Forwarder, Windows Event Log analysis  
+**Automation & Scripting:** PowerShell, PowerShell Remoting (WinRM), Bash, batch scripting, Task Scheduler  
+**Security:** Group Policy hardening, ACL/RBAC design, PAM password policy, SELinux enforcement, service hardening, PortFast/BPDU Guard, BPDU Guard, unused port shutdown, process accounting, network monitoring (SPAN/Wireshark)  
+**Systems Management:** WSUS, Windows Admin Center (WAC), disk quotas, Nutanix Guest Tools, OS patching (`dnf`/`apt`)
 
 ---
 
 ## Environment
 
-All CNIT 242 labs were completed in Purdue's CIT lab environment using physical Dell workstations and Nutanix hyperconverged nodes, networked via the CIT-NET infrastructure and accessed through OpenVPN. CNIT 344 labs used physical Cisco and HP switching hardware. CNIT 340 labs ran on the Nutanix virtual lab cluster.
+All CNIT 242 labs were completed in Purdue's CIT lab environment using physical Dell workstations and Nutanix hyperconverged nodes, networked via the CIT-NET infrastructure and accessed through OpenVPN. CNIT 344 labs used physical Cisco and HP switching hardware with console access via PuTTY. CNIT 340 labs ran on the Nutanix virtual lab cluster. The Splunk project was completed independently as a home lab setup.
